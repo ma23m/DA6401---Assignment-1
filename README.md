@@ -37,9 +37,9 @@ Ankle boot
 ### Data Processing:
 Before training the model, each image of the fashion-MNIST dataset is flattened where transform the 28x28 pixel image into a 1D array of length 784. This helps the neural network to process the images as a set of features.
 
-Then, the entire training, v testing and validation datasets are normalized to a range between 0 and 1 to improve the performance of the neural network model.
+Then, the entire training, testing and validation datasets are normalized to a range between 0 and 1 to improve the performance of the neural network model.
 
-Then  use the one hot encoded function to convert the label of each image into one-hot encoded arrays of length 10 where transforming the categorical value into a numerical value.
+Then  apply one hot encoded function to convert the label of each image into one-hot encoded arrays of length 10 where transforming the categorical value into a numerical value.
 
 ### Optimizers:
 The following optimizers are used:
@@ -54,6 +54,27 @@ The following optimizers are used:
 
 5.Adam
 6.Nadam
+
+### Training Process
+#### 1.initialization:
+The neural network is initialized with the parameters before training: 
+
+input size (784 for Fashion-MNIST)
+
+output size (10 classes)
+
+number of hidden layers
+
+nodes in each hidden layer
+
+weight initialization.
+
+#### 2.Forward Propagation
+This step data is passed through the neural network where each hidden layer uses an activation function  and the output layer uses to predict class probabilities.
+
+#### 3.Backward Propagation
+Cross-entropy loss is calculated, and gradients are computed using backpropagation.Optimizers like SGD, Momentum, and Nadam update the network’s parameters over several epochs.Training loss, accuracy, and validation accuracy are monitored to evaluate the model's performance.
+
 
 
 
