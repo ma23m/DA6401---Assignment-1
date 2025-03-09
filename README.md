@@ -100,6 +100,11 @@ activation functions: sigmoid, tanh, ReLU
 
 After finding the best hyperparameters, evaluate test accuracy and plot the confusion matrix for true vs predicted labels.
 
+### Prediction:
+The model was evaluated on the Fashion-MNIST dataset using three different hyperparameter configurations. The test accuracy was measured for each configuration, and results were logged with Wandb.
+
+Wandb Project Report: [Link]
+
 
 
 
