@@ -11,18 +11,27 @@ The fashion-MNIST dataset contains 60,000 training images and 10,000 testing ima
 The dataset 10 categories are:
 
 T-shirt/top
-Trouser
-Pullover
-Dress
-Coat
-Sandal
-Shirt
-Sneaker
-Bag
-Ankle boot
-Before training the model, each image is flattened, transforming the 28x28 pixel matrix into a 1D array of length 784. This allows the neural network to process the images as a set of features. Furthermore, the pixel values across the entire training, validation, and test datasets are normalized to a range between 0 and 1 to improve the stability and performance of the model.
 
-Additionally, the labels for each image are converted into one-hot encoded arrays of length 10, where each array corresponds to one of the 10 possible classes, transforming the categorical labels into a numerical format suitable for training the neural network.
+Trouser
+
+Pullover
+
+Dress
+
+Coat
+
+Sandal
+
+Shirt
+
+Sneaker
+
+Bag
+
+Ankle boot
+
+### Data Processing:
+Before training the model, each image of the fashion-MNIST dataset is flattened where transform the 28x28 pixel image into a 1D array of length 784. This helps the neural network to process the images as a set of features.Then, the entire training, v testing and validation datasets are normalized to a range between 0 and 1 to improve the performance of the neural network model.Then  use the one hot encoded function to convert the label of each image into one-hot encoded arrays of length 10 where transforming the categorical value into a numerical value.
 
 
 
