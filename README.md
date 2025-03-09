@@ -75,6 +75,19 @@ This step data is passed through the neural network where each hidden layer uses
 #### 3.Backward Propagation
 Cross-entropy loss is calculated, and gradients are computed using backpropagation.Optimizers like SGD, Momentum, and Nadam update the network’s parameters over several epochs.Training loss, accuracy, and validation accuracy are monitored to evaluate the model's performance.
 
+### Hyperparameters:
+Using the sweep functionality provided by wandb to finding the best values for the hyperparameters listed below:
+
+number of epochs: 5, 10
+number of hidden layers: 3, 4, 5
+size of every hidden layer: 32, 64, 128
+weight decay (L2 regularisation): 0, 0.0005, 0.5
+learning rate: 1e-3, 1 e-4
+optimizer: sgd, momentum, nesterov, rmsprop, adam, nadam
+batch size: 16, 32, 64
+weight initialisation: random, Xavier
+activation functions: sigmoid, tanh, ReLU
+
 
 
 
