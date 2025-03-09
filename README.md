@@ -33,9 +33,19 @@ Ankle boot
 ### Data Processing:
 Before training the model, each image of the fashion-MNIST dataset is flattened where transform the 28x28 pixel image into a 1D array of length 784. This helps the neural network to process the images as a set of features.Then, the entire training, v testing and validation datasets are normalized to a range between 0 and 1 to improve the performance of the neural network model.Then  use the one hot encoded function to convert the label of each image into one-hot encoded arrays of length 10 where transforming the categorical value into a numerical value.
 
+### Optimizers:
+The following optimizers are used:
 
+1.Stochastic Gradient Descent (SGD)
 
+2.Momentum-based Gradient Descent
 
+3.Nesterov Accelerated Gradient
+
+4.RMSprop
+
+5.Adam
+6.Nadam
 
 
 
