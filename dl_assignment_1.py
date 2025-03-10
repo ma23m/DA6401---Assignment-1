@@ -13,7 +13,7 @@ import wandb
 from keras.datasets import fashion_mnist
 
 # Initialize wandb
-wandb.init(project="DA6401_Assignment1_ma23m011", name="sample-images-grid")
+wandb.init(project="DA6401_Assignment1_ma23m011", name="sample-images-1")
 
 # Load Fashion-MNIST dataset
 (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
@@ -371,7 +371,7 @@ wandb.login(key=key)
 
 sweep_config = {
     'method': 'bayes',
-    'name' : 'sweep cross entropy-1',
+    'name' : 'sweep cross entropy-3',
     'metric': {
       'name': 'Val_accuracy',
       'goal': 'maximize'
@@ -425,8 +425,6 @@ def main():
 
 wandb.agent(sweep_id, function=main,count=100) # calls main function for count number of times.
 wandb.finish()
-
-
 
 
 
