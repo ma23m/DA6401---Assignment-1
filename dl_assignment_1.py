@@ -40,109 +40,28 @@ sample_labels = []
 
 #use for loop to add sample image and their class
 for class_id in range(10):
-    idx = np.where(y_train == class_id)[0][0]
-    sample_images.append(x_train[idx])
-    sample_labels.append(class_labels[class_id])
+    idx = np.where(y_train == class_id)[0][0] # Find the first index where y_train and class label equal
+    sample_images.append(x_train[idx]) # Add the image to the list
+    sample_labels.append(class_labels[class_id]) # Add the label to the list
 
 # With caption log images to wandb
 wandb.log({"Sample Images": [wandb.Image(img, caption=label) for img, label in zip(sample_images, sample_labels)]})
 
-# plot 2x5 grid image
-fig, axes = plt.subplots(2, 5, figsize=(10, 5))
-fig.suptitle("Sample Images from Fashion-MNIST", fontsize=14)
 
-#Display  image with labels
+fig, axes = plt.subplots(2, 5, figsize=(10, 5)) # plot 2x5 grid image
+fig.suptitle("Sample Images from Fashion-MNIST", fontsize=14)# Add a title
+
+# Plot each image in the grid
 for i, ax in enumerate(axes.flat):
-    ax.imshow(sample_images[i], cmap='gray')
-    ax.set_title(sample_labels[i])
-    ax.axis("off")
+    ax.imshow(sample_images[i], cmap='gray') # Display image in grayscale
+    ax.set_title(sample_labels[i]) # Set the title as the class label
+    ax.axis("off") # Hide axes
 
+# Show the plotted images
 plt.show()
 
 # Finish the wandb logging run
 wandb.finish()
-
-# # Normalize the input images (scale pixel values to [0,1])
-# x_train = x_train.reshape(x_train.shape[0], -1) / 255.0  # Flatten 28x28 images to 784-dim vector
-# x_test = x_test.reshape(x_test.shape[0], -1) / 255.0
-
-# # Convert labels to one-hot encoding
-# def one_hot_encode(y, num_classes=10):
-#     one_hot = np.zeros((y.size, num_classes))
-#     one_hot[np.arange(y.size), y] = 1
-#     return one_hot
-
-# y_train = one_hot_encode(y_train)
-# y_val = one_hot_encode(y_val)
-# y_test = one_hot_encode(y_test)
-# # Print to verify
-# print("y_train shape:", y_train.shape)  # (54000, 10)
-# print("y_val shape:", y_val.shape)      # (6000, 10)
-# print("y_test shape:", y_test.shape)      # (10000, 10)
-
-# # Define the Feedforward Neural Network class
-# class NeuralNetwork:
-#     def __init__(self, input_size=784, hidden_layers=[128, 64], output_size=10):
-#         """
-#         Initializes a fully connected neural network.
-#         Parameters:
-#             input_size (int): Number of input neurons (784 for Fashion-MNIST).
-#             hidden_layers (list): List containing the number of neurons in each hidden layer.
-#             output_size (int): Number of output neurons (10 for classification).
-#         """
-#         self.layers = [input_size] + hidden_layers + [output_size]  # Layers including input & output
-#         self.weights = []
-#         self.biases = []
-
-#         # Initialize weights and biases
-#         for i in range(len(self.layers) - 1):
-#             self.weights.append(np.random.randn(self.layers[i], self.layers[i+1]) * 0.01)
-#             self.biases.append(np.zeros((1, self.layers[i+1])))
-
-#     def sigmoid(self, z):
-#         z = np.clip(z, -500, 500)  # Prevent extreme values
-#         return 1 / (1 + np.exp(-z))
-
-#     def softmax(self, z):
-#         exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))  # Stability trick
-#         return exp_z / np.sum(exp_z, axis=1, keepdims=True)
-
-#     def forward(self, X):
-#         """
-#         Forward pass through the network.
-#         Returns activations of all layers.
-#         """
-#         activations = [X]
-#         for i in range(len(self.weights) - 1):
-#             z = np.dot(activations[-1], self.weights[i]) + self.biases[i]
-#             a = self.sigmoid(z)
-#             activations.append(a)
-
-#         # Output layer (softmax activation)
-#         z_out = np.dot(activations[-1], self.weights[-1]) + self.biases[-1]
-#         a_out = self.softmax(z_out)
-#         activations.append(a_out)
-
-#         return activations
-
-#     def predict(self, X):
-#         """
-#         Predict class labels for given input.
-#         """
-#         output = self.forward(X)[-1]
-#         return np.argmax(output, axis=1)
-
-
-# # Create a neural network with a flexible architecture
-# nn = NeuralNetwork(input_size=784, hidden_layers=[128, 64], output_size=10)
-
-# # Forward pass example
-# sample_input = x_train[:5]  # Take 5 sample images
-# output_probs = nn.forward(sample_input)[-1]  # Get output probability distribution
-
-# # Print predictions
-# print("Predicted class probabilities:\n", output_probs)
-# print("Predicted classes:", np.argmax(output_probs, axis=1))
 
 import numpy as np
 #import for fashion-mnist dataset from keras
@@ -165,8 +84,8 @@ y_train = y_train[:54000]
 
 # Convert labels into one-hot encoding
 def one_hot_encode(y, num_classes=10):
-    one_hot = np.zeros((y.size, num_classes))
-    one_hot[np.arange(y.size), y] = 1
+    one_hot = np.zeros((y.size, num_classes))# Create a zero matrix
+    one_hot[np.arange(y.size), y] = 1 # Set the corresponding class index to 1
     return one_hot
 
 #training,test and validation labels apply one hot encoding
@@ -373,9 +292,17 @@ def compute_accuracy(y_true, y_pred):
         accuracy = correct_predictions / y_true.shape[0]
         return accuracy*100
 
-# # Flatten both training and validation sets
-# x_train = x_train.reshape(x_train.shape[0], -1)  # (54000, 784)
-# x_val = x_val.reshape(x_val.shape[0], -1)  # (6000, 784)
+# Create a neural network with a flexible architecture
+nn = NeuralNetwork(input_size=784, hidden_layers=[128, 64], output_size=10)
+
+# Forward pass example
+sample_input = x_train[:50]  # Take 5 sample images
+# print(sample_input.shape)
+output_probs = nn.forward(sample_input)[0]  # Get output probability distribution
+
+# Print predictions
+#print("Predicted class probabilities:\n", output_probs)
+print("Predicted classes:", np.argmax(output_probs[3], axis=1))
 
 # # Create Neural Network
 # nn = NeuralNetwork(input_size=784, hidden_layers=[128, 64], output_size=10, learning_rate=0.01, optimizer="sgd", weight_init="xavier", activation="relu", weight_decay=0.0005)
@@ -398,7 +325,7 @@ wandb.login(key=key)
 # Define the sweep configuration
 sweep_config = {
     'method': 'bayes',# Use Bayesian optimization
-    'name' : 'sweep cross entropy-11', #sweep name
+    'name' : 'sweep cross entropy-14', #sweep name
     'metric': {
       'name': 'Val_accuracy',
       'goal': 'maximize' # maximize validation accuracy
@@ -455,9 +382,6 @@ def main():
 wandb.agent(sweep_id, function=main,count=100) # calls main function for count number of times.
 # Finish the W&B run
 wandb.finish()
-
-key = input('Enter your API:')
-wandb.login(key=key)
 
 import wandb
 #-ac_relu-hs_128-epc_10-hl_5-regu_0.0005-eta_0.001-optmz_sgd-batch_64-wght_xavier
@@ -612,56 +536,6 @@ import wandb
 # Initialize WandB
 wandb.init(project="DA6401_Assignment1_ma23m011", name="loss_comparison")
 
-# ------------------------------ Define Modified Neural Network ------------------------------
-class ModifiedNeuralNetwork(NeuralNetwork):
-    def __init__(self, loss_function="cross_entropy", **kwargs):
-        """
-        Extends NeuralNetwork to support both Cross-Entropy and Squared Error Loss.
-        """
-        super().__init__(**kwargs)
-        self.loss_function = loss_function
-
-    def compute_loss(self, y_true, y_pred):
-        """ Compute loss based on selected loss function. """
-        if self.loss_function == "cross_entropy":
-            return -np.sum(y_true * np.log(y_pred + self.epsilon)) / y_true.shape[0]
-        elif self.loss_function == "squared_error":
-            return np.mean((y_true - y_pred) ** 2)
-
-    def train(self, X_train, y_train, X_val, y_val, epochs=10, batch_size=32):
-        """ Train the network using mini-batch gradient descent and track loss per epoch. """
-        num_samples = X_train.shape[0]
-        loss_history = []  # Store loss values per epoch
-
-        for epoch in range(epochs):
-            indices = np.arange(num_samples)
-            np.random.shuffle(indices)
-            X_train, y_train = X_train[indices], y_train[indices]
-
-            for i in range(0, num_samples, batch_size):
-                X_batch = X_train[i:i + batch_size]
-                y_batch = y_train[i:i + batch_size]
-
-                # Forward pass
-                activations, z_values = self.forward(X_batch)
-
-                # Compute gradients
-                gradients_w, gradients_b = self.backward(X_batch, y_batch, activations, z_values)
-
-                # Update weights
-                self.update_weights(gradients_w, gradients_b)
-
-            # Compute training loss
-            train_activations, _ = self.forward(X_train)
-            train_loss = self.compute_loss(y_train, train_activations[-1])
-            loss_history.append(train_loss)
-
-            print(f"Epoch {epoch+1}: Loss = {train_loss:.4f}")
-
-            # Log loss per epoch in WandB
-            wandb.log({f"{self.loss_function} Loss": train_loss, "Epoch": epoch})
-
-        return loss_history  # Return loss values for plotting
 
 #Train with Cross-Entropy Loss
 cross_entropy_model = ModifiedNeuralNetwork(
