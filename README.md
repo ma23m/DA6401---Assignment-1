@@ -7,7 +7,7 @@ This assignment develop a neural network model using fashion-MNIST dataset.This 
 
 For this code, NumPy, Matplotlib, and Keras libraries are used for building the model and visualizing results. 
 
-sklearn.model_selection is used for splitting the dataset into  two dataset training and testing.Various optimization algorithms and hyperparameter tuning methods are used to improve the model's performance.
+naive method is used for splitting the dataset into  two dataset training and testing.Various optimization algorithms and hyperparameter tuning methods are used to improve the model's performance.
 
 ### Dataset
 The fashion-MNIST dataset contains 60,000 training images and 10,000 testing images.Each image belongs to one of the 10 fashion items classes. Each image is a 28x28 grayscale image with a total of 784 pixels per image.
