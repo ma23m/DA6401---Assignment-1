@@ -63,6 +63,7 @@ plt.show()
 # Finish the wandb logging run
 wandb.finish()
 
+#bad dite habe
 import numpy as np
 #import for fashion-mnist dataset from keras
 from keras.datasets import fashion_mnist
@@ -86,7 +87,7 @@ y_train = y_train[:54000]
 def one_hot_encode(y, num_classes=10):
     one_hot = np.zeros((y.size, num_classes))# Create a zero matrix
     one_hot[np.arange(y.size), y] = 1 # Set the corresponding class index to 1
-    return one_hot
+    return one_hot # Return the one-hot encoded matrix
 
 #training,test and validation labels apply one hot encoding
 y_train = one_hot_encode(y_train)
@@ -99,59 +100,70 @@ class NeuralNetwork:
                  learning_rate=0.01, optimizer="sgd", weight_init="random",
                  activation="sigmoid", weight_decay=0.0):
         #initialize parameters for feedforward neural network
-        self.layers = [input_size] + hidden_layers + [output_size]
-        self.learning_rate = learning_rate
-        self.optimizer = optimizer
-        self.weight_init = weight_init
-        self.activation = activation
-        self.weight_decay = weight_decay
-        self.init_weights()
+        self.layers = [input_size] + hidden_layers + [output_size] #layer size
+        self.learning_rate = learning_rate #learning rate
+        self.optimizer = optimizer #optimizer type
+        self.weight_init = weight_init # weight initialization method
+        self.activation = activation #activation function
+        self.weight_decay = weight_decay # L2 regularization factor
+        self.init_weights() # Initialize weights and biases
 
-        #For different optimizer technique use optimizer-specific variables
-        self.momentum = 0.9 #mumentum parameter
-        self.beta1 = 0.9  # Adam/Nadam parameter
-        self.beta2 = 0.999 # Adam/Nadam parameter
-        self.epsilon = 1e-8
-        self.velocity = [np.zeros_like(w) for w in self.weights] #mumentum velocity
-        self.squared_grads = [np.zeros_like(w) for w in self.weights]
-        self.m = [np.zeros_like(w) for w in self.weights] #adam 1st moment
-        self.v = [np.zeros_like(w) for w in self.weights] #adam 2nd moment
+
+        # Optimizer-specific variables
+        self.momentum = 0.9#Momentum
+        self.beta1 = 0.9  # Adam/Nadam
+        self.beta2 = 0.999 #Adam/Nadam
+        self.epsilon = 1e-8 # Small value to prevent division by zero
         self.t = 0  # Time step
+
+        # Momentum/Nesterov
+        self.velocity = [np.zeros_like(w) for w in self.weights]  # For weights
+        self.velocity_bias = [np.zeros_like(b) for b in self.biases]  #  For biases
+
+        # RMSprop
+        self.squared_grads = [np.zeros_like(w) for w in self.weights]  # For weights
+        self.squared_grads_bias = [np.zeros_like(b) for b in self.biases]  #  For biases
+
+        # Adam/Nadam
+        self.m = [np.zeros_like(w) for w in self.weights]  # First moment estimate of weights
+        self.v = [np.zeros_like(w) for w in self.weights]  # Second moment estimate of weights
+        self.m_bias = [np.zeros_like(b) for b in self.biases]  #  First moment estimate of biases
+        self.v_bias = [np.zeros_like(b) for b in self.biases]  #  Second moment estimate of biases
 
     def init_weights(self):
         # Initialize weights and biases
         self.weights = [] #Empty list define to store weight matrix
         self.biases = [] #Empty list define to store bias vector
         #loop use for random and xavier initialization
-        for i in range(len(self.layers) - 1):
-            if self.weight_init == "random":
+        for i in range(len(self.layers) - 1): # Loop through layers
+            if self.weight_init == "random": # Random initialization
                 self.weights.append(np.random.randn(self.layers[i], self.layers[i+1]) * 0.01)
-            elif self.weight_init == "xavier":
+            elif self.weight_init == "xavier": # Xavier initialization
                 self.weights.append(np.random.randn(self.layers[i], self.layers[i+1]) * np.sqrt(1 / self.layers[i]))
-            self.biases.append(np.zeros((1, self.layers[i+1])))
+            self.biases.append(np.zeros((1, self.layers[i+1]))) # Initialize biases to zero
 
     # Calculate activation function value based user expectation.
     def activation_function(self, z):
         if self.activation == "sigmoid":
-            return 1 / (1 + np.exp(-np.clip(z, -10, 10)))
+            return 1 / (1 + np.exp(-np.clip(z, -10, 10))) # Sigmoid function
         elif self.activation == "tanh":
-            return np.tanh(z)
+            return np.tanh(z)  # Tanh function
         elif self.activation == "relu":
-            return np.maximum(0, z)
+            return np.maximum(0, z) # ReLU function
 
     #calculate activation function derivative
     def activation_derivative(self, a):
         if self.activation == "sigmoid":
-            return a * (1 - a)
+            return a * (1 - a)   # Sigmoid derivative
         elif self.activation == "tanh":
-            return 1 - a**2
+            return 1 - a**2   # Tanh derivative
         elif self.activation == "relu":
-            return (a > 0).astype(float)
+            return (a > 0).astype(float) # ReLU derivative
 
     #For output layer calculate softmax function value
     def softmax(self, z):
-        exp_z = np.exp(z - np.max(z, axis=1, keepdims=True))
-        return exp_z / np.sum(exp_z, axis=1, keepdims=True)
+        exp_z = np.exp(z - np.max(z, axis=1, keepdims=True)) # Prevent overflow
+        return exp_z / np.sum(exp_z, axis=1, keepdims=True)  # Normalize values
 
     #Forward propagation
     def forward(self, X):
@@ -162,16 +174,15 @@ class NeuralNetwork:
 
          #Use for loop for calculate weighted sum and  apply activation function
         for i in range(len(self.weights) - 1):
-            z = np.dot(activations[-1], self.weights[i]) + self.biases[i]
-            z_values.append(z)
-            activations.append(self.activation_function(z))
+            z = np.dot(activations[-1], self.weights[i]) + self.biases[i] # Compute weighted sum
+            z_values.append(z)  # Store weighted sum value
+            activations.append(self.activation_function(z)) # Apply activation function
 
         #Final layer computation using softmax function
-        z_out = np.dot(activations[-1], self.weights[-1]) + self.biases[-1]
-        z_values.append(z_out)
-        activations.append(self.softmax(z_out))
-
-        return activations, z_values
+        z_out = np.dot(activations[-1], self.weights[-1]) + self.biases[-1] # Final layer computation
+        z_values.append(z_out) #store final layer computation values
+        activations.append(self.softmax(z_out)) # Apply softmax
+        return activations, z_values #  all activations and z values
 
     #Cross entropy loss computation with L2 ragularization
     def compute_loss(self, y_true, y_pred):
@@ -179,86 +190,127 @@ class NeuralNetwork:
         loss = -np.sum(y_true * np.log(y_pred + self.epsilon)) / y_true.shape[0]
         #L2 regularization
         l2_penalty = self.weight_decay * sum(np.sum(w**2) for w in self.weights) / 2
-        return loss + l2_penalty
+        return loss + l2_penalty # Total loss
 
     #Compute accuracy by comparing true vs predicted labels.
     def compute_accuracy(self, y_true, y_pred):
-        correct_predictions = np.sum(np.argmax(y_pred, axis=1) == np.argmax(y_true, axis=1))
-        return correct_predictions / y_true.shape[0]
+        correct_predictions = np.sum(np.argmax(y_pred, axis=1) == np.argmax(y_true, axis=1)) # Count correct predictions
+        return correct_predictions / y_true.shape[0] # Compute accuracy
 
      #Use backpropagation to calculate gradients.
     def backward(self, X, y_true, activations, z_values):
-        gradients_w = [np.zeros_like(w) for w in self.weights]
-        gradients_b = [np.zeros_like(b) for b in self.biases]
+        gradients_w = [np.zeros_like(w) for w in self.weights]  # Initialize gradients for weights with zeros
+        gradients_b = [np.zeros_like(b) for b in self.biases]  # Initialize gradients for biases with zeros
 
         #Compute output layer gradient
-        dL_dz = activations[-1] - y_true
-        gradients_w[-1] = np.dot(activations[-2].T, dL_dz) + self.weight_decay * self.weights[-1]
-        gradients_b[-1] = np.sum(dL_dz, axis=0, keepdims=True)
+        dL_dz = activations[-1] - y_true # for loss
+        gradients_w[-1] = np.dot(activations[-2].T, dL_dz) + self.weight_decay * self.weights[-1] #for weight
+        gradients_b[-1] = np.sum(dL_dz, axis=0, keepdims=True)  #for bias
 
         # Compute Hidden layers gradient
         for i in reversed(range(len(self.weights) - 1)):
-            dL_dz = np.dot(dL_dz, self.weights[i+1].T) * self.activation_derivative(activations[i+1])
-            gradients_w[i] = np.dot(activations[i].T, dL_dz) + self.weight_decay * self.weights[i]
-            gradients_b[i] = np.sum(dL_dz, axis=0, keepdims=True)
+            dL_dz = np.dot(dL_dz, self.weights[i+1].T) * self.activation_derivative(activations[i+1]) #for loss
+            gradients_w[i] = np.dot(activations[i].T, dL_dz) + self.weight_decay * self.weights[i] #for weight
+            gradients_b[i] = np.sum(dL_dz, axis=0, keepdims=True) #for bias
 
-        return gradients_w, gradients_b
+        return gradients_w, gradients_b #return weight and bias
 
     # Apply gradient updates using different optimizers.
     def update_weights(self, gradients_w, gradients_b):
+        """ Apply gradient updates using different optimizers. """
         self.t += 1  # Update time step for Adam/Nadam
 
         for i in range(len(self.weights)):
-            # Apply stochastic gradient descent
             if self.optimizer == "sgd":
                 self.weights[i] -= self.learning_rate * gradients_w[i]
                 self.biases[i] -= self.learning_rate * gradients_b[i]
 
-            #Apply momentum gradient descent
             elif self.optimizer == "momentum":
                 self.velocity[i] = self.momentum * self.velocity[i] - self.learning_rate * gradients_w[i]
                 self.weights[i] += self.velocity[i]
                 self.biases[i] -= self.learning_rate * gradients_b[i]
 
-            #Apply nestrov
             elif self.optimizer == "nesterov":
+                # Compute lookahead update for weights
                 temp_weights = self.weights[i] + self.momentum * self.velocity[i]
-                self.velocity[i] = self.momentum * self.velocity[i] - self.learning_rate * gradients_w[i]
-                self.weights[i] = temp_weights + self.velocity[i]
+                temp_biases = self.biases[i] + self.momentum * self.velocity_bias[i]
 
-            #Apply rmsprop optimizer
+                # Compute velocity update
+                self.velocity[i] = self.momentum * self.velocity[i] - self.learning_rate * gradients_w[i]
+                self.velocity_bias[i] = self.momentum * self.velocity_bias[i] - self.learning_rate * gradients_b[i]
+
+                # Apply Nesterov update
+                self.weights[i] = temp_weights + self.velocity[i]
+                self.biases[i] = temp_biases + self.velocity_bias[i]
+
             elif self.optimizer == "rmsprop":
+                # Update squared gradients for weights
                 self.squared_grads[i] = 0.9 * self.squared_grads[i] + 0.1 * (gradients_w[i] ** 2)
                 self.weights[i] -= self.learning_rate * gradients_w[i] / (np.sqrt(self.squared_grads[i]) + self.epsilon)
 
-            #Apply adam optimizer
+                # Update squared gradients for biases
+                self.squared_grads_bias[i] = 0.9 * self.squared_grads_bias[i] + 0.1 * (gradients_b[i] ** 2)
+                self.biases[i] -= self.learning_rate * gradients_b[i] / (np.sqrt(self.squared_grads_bias[i]) + self.epsilon)
+
             elif self.optimizer == "adam":
+                # Update biased first moment estimate (momentum) for weights
                 self.m[i] = self.beta1 * self.m[i] + (1 - self.beta1) * gradients_w[i]
                 self.v[i] = self.beta2 * self.v[i] + (1 - self.beta2) * (gradients_w[i] ** 2)
+
+                # Bias correction for weights
                 m_hat = self.m[i] / (1 - self.beta1 ** self.t)
                 v_hat = self.v[i] / (1 - self.beta2 ** self.t)
+
+                # Weight update
                 self.weights[i] -= self.learning_rate * m_hat / (np.sqrt(v_hat) + self.epsilon)
 
-            #Apply nadam optimizer
+                # Update biased first moment estimate (momentum) for biases
+                self.m_bias[i] = self.beta1 * self.m_bias[i] + (1 - self.beta1) * gradients_b[i]
+                self.v_bias[i] = self.beta2 * self.v_bias[i] + (1 - self.beta2) * (gradients_b[i] ** 2)
+
+                # Bias correction for biases
+                m_hat_bias = self.m_bias[i] / (1 - self.beta1 ** self.t)
+                v_hat_bias = self.v_bias[i] / (1 - self.beta2 ** self.t)
+
+                #  Bias update
+                self.biases[i] -= self.learning_rate * m_hat_bias / (np.sqrt(v_hat_bias) + self.epsilon)
+
             elif self.optimizer == "nadam":
-                m_hat = (self.beta1 * self.m[i] + (1 - self.beta1) * gradients_w[i]) / (1 - self.beta1 ** self.t)
+                #  Compute momentum update for weights
+                self.m[i] = self.beta1 * self.m[i] + (1 - self.beta1) * gradients_w[i]
+                self.v[i] = self.beta2 * self.v[i] + (1 - self.beta2) * (gradients_w[i] ** 2)
+
+                #  Bias correction for weights
+                m_hat = self.m[i] / (1 - self.beta1 ** self.t)
                 v_hat = self.v[i] / (1 - self.beta2 ** self.t)
+
+                #  Weight update with Nadam formula
                 self.weights[i] -= self.learning_rate * (self.momentum * m_hat + (1 - self.momentum) * gradients_w[i]) / (np.sqrt(v_hat) + self.epsilon)
 
+                #  Compute momentum update for biases
+                self.m_bias[i] = self.beta1 * self.m_bias[i] + (1 - self.beta1) * gradients_b[i]
+                self.v_bias[i] = self.beta2 * self.v_bias[i] + (1 - self.beta2) * (gradients_b[i] ** 2)
+
+                #  Bias correction for biases
+                m_hat_bias = self.m_bias[i] / (1 - self.beta1 ** self.t)
+                v_hat_bias = self.v_bias[i] / (1 - self.beta2 ** self.t)
+
+                #  Bias update with Nadam formula
+                self.biases[i] -= self.learning_rate * (self.momentum * m_hat_bias + (1 - self.momentum) * gradients_b[i]) / (np.sqrt(v_hat_bias) + self.epsilon)
     def train(self, X_train, y_train, X_val, y_val, epochs=10, batch_size=32):
         #Train nural network using mini-batch gradient descent.
-        num_samples = X_train.shape[0]
+        num_samples = X_train.shape[0] # number of samples
 
         #use for loop for shuffle training data
-        for epoch in range(epochs):
-            indices = np.arange(num_samples)
-            np.random.shuffle(indices)
-            X_train, y_train = X_train[indices], y_train[indices]
+        for epoch in range(epochs): # Loop through epochs
+            indices = np.arange(num_samples) # Create index array
+            np.random.shuffle(indices) # Shuffle data
+            X_train, y_train = X_train[indices], y_train[indices] # Shuffle training data
 
             # Mini-batch training
-            for i in range(0, num_samples, batch_size):
-                X_batch = X_train[i:i + batch_size]
-                y_batch = y_train[i:i + batch_size]
+            for i in range(0, num_samples, batch_size):# Loop through batches
+                X_batch = X_train[i:i + batch_size] # batch inputs
+                y_batch = y_train[i:i + batch_size] # batch labels
 
                 #Use forward pass
                 activations, z_values = self.forward(X_batch)
@@ -325,7 +377,7 @@ wandb.login(key=key)
 # Define the sweep configuration
 sweep_config = {
     'method': 'bayes',# Use Bayesian optimization
-    'name' : 'sweep cross entropy-14', #sweep name
+    'name' : 'sweep cross entropy-18', #sweep name
     'metric': {
       'name': 'Val_accuracy',
       'goal': 'maximize' # maximize validation accuracy
@@ -384,13 +436,13 @@ wandb.agent(sweep_id, function=main,count=100) # calls main function for count n
 wandb.finish()
 
 import wandb
-#-ac_relu-hs_128-epc_10-hl_5-regu_0.0005-eta_0.001-optmz_sgd-batch_64-wght_xavier
+#-ac_tanh-hs_64-epc_10-hl_5-regu_0.0005-eta_0.001-optmz_nadam-batch_64-wght_xavier
 best_config = {
-    'hidden_layers': [128]*5,
+    'hidden_layers': [64]*5,
     'learning_rate': 0.001,
-    'optimizer': 'sgd',
+    'optimizer': 'nadam',
     'weight_init': 'xavier',
-    'activation': 'relu',
+    'activation': 'tanh',
     'weight_decay': 0.0005,
     'epochs': 10,
     'batch_size': 64
@@ -399,7 +451,7 @@ best_config = {
 # Define a Sweep for Confusion Matrix
 sweep_config_conf_matrix = {
     'method': 'grid',
-    'name': 'Confusion Matrix Sweep-2',
+    'name': 'Confusion Matrix Sweep-5',
     'parameters': {
         'model_name': {'values': ['best_model']}
     }
@@ -410,38 +462,41 @@ sweep_id_conf_matrix = wandb.sweep(sweep=sweep_config_conf_matrix, project='DA64
 
 import numpy as np
 import matplotlib.pyplot as plt
+# import Seaborn for enhanced visualization
 import seaborn as sns
+# import confusion_matrix to evaluate classification performance
 from sklearn.metrics import confusion_matrix
-import wandb
+
 
 def train_best_model_and_plot_confusion_matrix():
+    # Initialize Weights & Biases for experiment tracking
     wandb.init(project="DA6401_Assignment1_ma23m011", name="Best Model - Conf Matrix")
 
     # Train Best Model
     best_model = NeuralNetwork(
-        input_size=784,
-        hidden_layers=best_config['hidden_layers'],
-        output_size=10,
-        learning_rate=best_config['learning_rate'],
-        optimizer=best_config['optimizer'],
-        weight_init=best_config['weight_init'],
-        activation=best_config['activation'],
-        weight_decay=best_config['weight_decay']
+        input_size=784,# Number of input features
+        hidden_layers=best_config['hidden_layers'],# Best hidden layer
+        output_size=10, # Number of output classes
+        learning_rate=best_config['learning_rate'],# best learning rate
+        optimizer=best_config['optimizer'], # Selected optimizer
+        weight_init=best_config['weight_init'],# Weight initialization
+        activation=best_config['activation'],# Chosen activation function
+        weight_decay=best_config['weight_decay']# Regularization
     )
 
-    num_epochs = best_config['epochs']
-    batch_size = best_config['batch_size']
+    num_epochs = best_config['epochs'] # Number of training epochs
+    batch_size = best_config['batch_size'] # Mini-batch size
 
     # Store test accuracy for plotting
     test_accuracies = []
 
     for epoch in range(num_epochs):
-        best_model.train(x_train, y_train, x_val, y_val, epochs=1, batch_size=batch_size)
+        best_model.train(x_train, y_train, x_val, y_val, epochs=1, batch_size=batch_size) # Train the model for one epoch
 
         # Forward pass to get predictions on test set
         y_pred_probs = best_model.forward(x_test)[0][-1]  # Get softmax output
-        y_pred = np.argmax(y_pred_probs, axis=1)
-        y_true = np.argmax(y_test, axis=1)
+        y_pred = np.argmax(y_pred_probs, axis=1)# Get predicted class labels
+        y_true = np.argmax(y_test, axis=1)# Get true class labels
 
         # Compute test accuracy
         accuracy = np.sum(y_pred == y_true) / y_true.shape[0]
@@ -490,9 +545,9 @@ class ModifiedNeuralNetwork(NeuralNetwork):
     def compute_loss(self, y_true, y_pred):
         # Compute loss based on loss function.
         if self.loss_function == "cross_entropy":
-            return -np.sum(y_true * np.log(y_pred + self.epsilon)) / y_true.shape[0]
+            return -np.sum(y_true * np.log(y_pred + self.epsilon)) / y_true.shape[0] # Adding epsilon for numerical stability
         elif self.loss_function == "squared_error":
-            return np.mean((y_true - y_pred) ** 2)
+            return np.mean((y_true - y_pred) ** 2) # Mean Squared Error loss
 
     def train(self, X_train, y_train, X_val, y_val, epochs=10, batch_size=32):
         #Train the neural network using mini-batch gradient descent
@@ -500,11 +555,12 @@ class ModifiedNeuralNetwork(NeuralNetwork):
         loss_history = []  # Store loss values per epoch
 
         for epoch in range(epochs):
-            indices = np.arange(num_samples)
+            indices = np.arange(num_samples) # Shuffle training data at the start of each epoch
             np.random.shuffle(indices)
             X_train, y_train = X_train[indices], y_train[indices]
 
             for i in range(0, num_samples, batch_size):
+                # Extract mini-batch data
                 X_batch = X_train[i:i + batch_size]
                 y_batch = y_train[i:i + batch_size]
 
@@ -520,7 +576,7 @@ class ModifiedNeuralNetwork(NeuralNetwork):
             # Compute training loss
             train_activations, _ = self.forward(X_train)
             train_loss = self.compute_loss(y_train, train_activations[-1])
-            loss_history.append(train_loss)
+            loss_history.append(train_loss) # Store loss for visualization
 
             print(f"Epoch {epoch+1}: Loss = {train_loss:.4f}")
 
@@ -531,7 +587,7 @@ class ModifiedNeuralNetwork(NeuralNetwork):
 
 import numpy as np
 import matplotlib.pyplot as plt
-import wandb
+
 
 # Initialize WandB
 wandb.init(project="DA6401_Assignment1_ma23m011", name="loss_comparison")
@@ -539,35 +595,36 @@ wandb.init(project="DA6401_Assignment1_ma23m011", name="loss_comparison")
 
 #Train with Cross-Entropy Loss
 cross_entropy_model = ModifiedNeuralNetwork(
-    input_size=784, hidden_layers=[128]*5, output_size=10,
-    learning_rate=0.001, optimizer="sgd", weight_init="xavier",
-    activation="relu", weight_decay=0.0005, loss_function="cross_entropy"
+    input_size=784, hidden_layers=[64]*5, output_size=10,
+    learning_rate=0.001, optimizer="nadam", weight_init="xavier",
+    activation="tanh", weight_decay=0.0005, loss_function="cross_entropy"
 )
 
+# Train the model with cross entropy  loss
 cross_entropy_losses = cross_entropy_model.train(x_train, y_train, x_val, y_val, epochs=10, batch_size=64)
 
 # Train with Squared Error Loss
 squared_error_model = ModifiedNeuralNetwork(
-    input_size=784, hidden_layers=[128]*5, output_size=10,
-    learning_rate=0.001, optimizer="sgd", weight_init="xavier",
-    activation="relu", weight_decay=0.0005, loss_function="squared_error"
+    input_size=784, hidden_layers=[64]*5, output_size=10,
+    learning_rate=0.001, optimizer="nadam", weight_init="xavier",
+    activation="tanh", weight_decay=0.0005, loss_function="squared_error"
 )
 
 squared_error_losses = squared_error_model.train(x_train, y_train, x_val, y_val, epochs=10, batch_size=64)
 
 # Plot the Loss Curves
-plt.figure(figsize=(10, 6))
-plt.plot(cross_entropy_losses, label="Cross-Entropy Loss", color="blue")
-plt.plot(squared_error_losses, label="Squared Error Loss", color="red", linestyle="dashed")
-plt.xlabel("Epochs")
-plt.ylabel("Loss")
-plt.title("Cross-Entropy vs. Squared Error Loss")
-plt.legend()
-plt.grid()
+plt.figure(figsize=(10, 6)) # Set figure size for better visualization
+plt.plot(cross_entropy_losses, label="Cross-Entropy Loss", color="blue")# Plot cross-entropy loss
+plt.plot(squared_error_losses, label="Squared Error Loss", color="red", linestyle="dashed") # Plot squared error loss
+plt.xlabel("Epochs")# Label for x-axis
+plt.ylabel("Loss")# Label for y-axis
+plt.title("Cross-Entropy vs. Squared Error Loss") # Set title for the plot
+plt.legend()# Display legend to differentiate the lines
+plt.grid()# Add grid
 
 # Log the loss plot to WandB
 wandb.log({"Loss Comparison Plot": wandb.Image(plt)})
-plt.show()
+plt.show()# Show the plot
 
 import wandb
 from keras.datasets import mnist
@@ -645,9 +702,9 @@ def train_and_evaluate(config, name):
 
 # Run 3 Best Configurations based on fshoin mnist accuracy
 configs = [
-    {"hidden_layers": [128]*5, "activation": "relu", "optimizer": "sgd", "learning_rate": 0.001, "batch_size": 64, "weight_decay": 0.0005, "weight_init": "xavier"},
-    {"hidden_layers": [64]*3, "activation": "sigmoid", "optimizer": "adam", "learning_rate": 0.001, "batch_size": 64, "weight_decay": 0.0005, "weight_init": "xavier"},
-    {"hidden_layers": [128]*5, "activation": "tanh", "optimizer": "rmsprop", "learning_rate": 0.001, "batch_size":64, "weight_decay": 0.0005, "weight_init": "xavier"}
+    {"hidden_layers": [64]*5, "activation": "tanh", "optimizer": "nadam", "learning_rate": 0.001, "batch_size": 64, "weight_decay": 0.0005, "weight_init": "xavier"},
+    {"hidden_layers": [128]*3, "activation": "tanh", "optimizer": "adam", "learning_rate": 0.001, "batch_size": 32, "weight_decay": 0.0005, "weight_init": "random"},
+    {"hidden_layers": [128]*3, "activation": "relu", "optimizer": "adam", "learning_rate": 0.001, "batch_size":16, "weight_decay": 0, "weight_init": "xavier"}
 ]
 
 results = []
