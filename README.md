@@ -105,7 +105,11 @@ The model was evaluated on the Fashion-MNIST dataset using three different hyper
 
 ### Running the code:
 
-1.For question 1 run the python Q1_dataPlot.py file. 
+1.For question 1 run the command 
+```
+python Q1_dataPlot.py
+```
+2.
 
 Wandb Project Report: [https://wandb.ai/ma23m011-iit-madras/DA6401_Assignment1_ma23m011/reportlist]
 
