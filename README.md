@@ -172,7 +172,7 @@ python Q8_CompareLosses.py
 python Q10_mnistEvaluation.py
 ```
 
-### Wandb Project Report: [Report Link](https://wandb.ai/ma23m011-iit-madras/DA6401_Assignment1_ma23m011/reportlist)
+### Wandb Project Report: [Report Link](https://wandb.ai/ma23m011-iit-madras/DA6401_Assignment1_ma23m011/reports/Mousina-Barman-MA23M011-DA6401-Assignment-1--VmlldzoxMTQ5ODUxOA)
 
 
 
