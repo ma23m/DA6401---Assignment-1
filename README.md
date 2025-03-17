@@ -106,7 +106,7 @@ The model was evaluated on the Fashion-MNIST dataset using three different hyper
 ### Running the code:
 After downloading all the py files please run the following commands to see the results of the respective questions: 
 
-#### 1. For question 1 run the command 
+#### 1. For question 1 run the following command 
 ```
 python Q1_dataPlot.py
 ```
@@ -130,27 +130,24 @@ python train.py --wandb_entity "ma23m011-iit-madras" --wandb_project "DA6401_Ass
 #### 5. For question 5
 After training the model, the best validation accuracy is 89.1.
 
-#### 6. For question 6 all the required optimizers has been created in 
-```
-neural_network.py  file
-```
+#### 6. For question 6 Parallel co-ordinates plot and a correlation summary has been shown in the respective section in the report
 
-#### 7. For question 7 run the command 
+#### 7. For question 7 Please run the following command to generate Confusion Matrix and the respective Test Accuracy Plot over epochs
 ```
 python Q7_ConfMatrix.py
 ```
 
-#### 8.For question 8 run the command 
+#### 8.For question 8 Please run the following command to see the comparative analysis for the Squared Error Vs. Cross-Entropy Losses 
 ```
 python Q8_CompareLosses.py
 ```
 
-#### 10.For question 10 run the command 
+#### 10.For question 10 Please run the following command to explore the performance of best three configurations obatined from the `Fashion-MNIST` dataset over the `MNIST` dataset 
 ```
 python Q10_mnistEvaluation.py
 ```
 
-Wandb Project Report: [https://wandb.ai/ma23m011-iit-madras/DA6401_Assignment1_ma23m011/reportlist]
+### Wandb Project Report: [Report Link](https://wandb.ai/ma23m011-iit-madras/DA6401_Assignment1_ma23m011/reportlist)
 
 
 
