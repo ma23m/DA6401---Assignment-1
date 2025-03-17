@@ -106,6 +106,31 @@ The model was evaluated on the Fashion-MNIST dataset using three different hyper
 ### Running the code:
 After downloading all the py files please run the following commands to see the results of the respective questions: 
 
+#### Command-Line Arguments
+
+The following arguments can be used to configure the training process:
+
+| Argument | Description |
+|----------|-------------|
+| --wandb_project | Project name used for tracking experiments in WandB. |
+| --wandb_entity | WandB entity (`username`) for tracking experiments. |
+| --dataset | Dataset choice (`mnist` or `fashion_mnist`). |
+| --hidden_size | Number of `neurons` per hidden layer. |
+| --num_layers | Number of `hidden layers` in the neural network. |
+| --learning_rate | `Learning rate` for model training. |
+| --optimizer | `Optimizer` choice for training. |
+| --weight_init | `Weight initialization` method. |
+| --activation | `Activation function` used in hidden layers. |
+| --weight_decay | `Weight decay` (L2 regularization strength). |
+| --epochs | Number of training `epochs`. |
+| --batch_size | `Batch size` for training. |
+
+#### Example
+To train the model with custom arguments, please run:
+```
+python train.py --wandb_project "DA6401_Assignment1_ma23m011" --wandb_entity "ma23m011-iit-madras" --dataset "mnist" --epochs 10 --batch_size 32 --hidden_size 128 --num_layers 3 --learning_rate 0.001 --optimizer "adam" --weight_init "xavier" --activation "relu" --weight_decay 0.0005
+```
+
 #### 1. For question 1 run the following command 
 ```
 python Q1_dataPlot.py
