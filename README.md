@@ -53,6 +53,7 @@ The following optimizers are used:
 4.RMSprop
 
 5.Adam
+
 6.Nadam
 
 ### Training Process
