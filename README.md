@@ -109,7 +109,20 @@ The model was evaluated on the Fashion-MNIST dataset using three different hyper
 ```
 python Q1_dataPlot.py
 ```
-2.
+3. For question 7 run the command 
+```
+python Q7_ConfMatrix.py
+```
+
+4.For question 8 run the command 
+```
+python Q8_CompareLosses.py
+```
+
+5.For question 10 run the command 
+```
+python Q10_mnistEvaluation.py
+```
 
 Wandb Project Report: [https://wandb.ai/ma23m011-iit-madras/DA6401_Assignment1_ma23m011/reportlist]
 
