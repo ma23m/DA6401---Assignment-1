@@ -22,6 +22,7 @@ class NeuralNetwork:
 
         # Optimizer-specific parameters
         self.momentum = 0.9  # Momentum factor (for SGD with momentum)
+        self.beta = 0.9  # Beta for RMSprop
         self.beta1 = 0.9  # Adam/Nadam first moment decay rate
         self.beta2 = 0.999  # Adam/Nadam second moment decay rate
         self.epsilon = 1e-8  # Small value to prevent division by zero
@@ -157,7 +158,8 @@ class NeuralNetwork:
     
             elif self.optimizer == "rmsprop":  # RMSprop optimizer
                 # Update squared gradient moving average for weights
-                self.squared_grads[i] = 0.9 * self.squared_grads[i] + 0.1 * (gradients_w[i] ** 2)
+                print('selfbeta', self.beta)
+                self.squared_grads[i] = self.beta * self.squared_grads[i] + (1 - self.beta) * (gradients_w[i] ** 2)
                 self.weights[i] -= self.learning_rate * gradients_w[i] / (np.sqrt(self.squared_grads[i]) + self.epsilon)
     
                 # Update squared gradient moving average for biases
