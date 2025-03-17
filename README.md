@@ -104,7 +104,7 @@ After finding the best hyperparameters, evaluate test accuracy and plot the conf
 The model was evaluated on the Fashion-MNIST dataset using three different hyperparameter configurations. The test accuracy was measured for each configuration, and results were logged with Wandb.
 
 ### Running the code:
-After downloading all the py files please run the following command to see the results of the respective questions: 
+After downloading all the py files please run the following commands to see the results of the respective questions: 
 
 #### 1. For question 1 run the command 
 ```
@@ -116,22 +116,36 @@ python Q1_dataPlot.py
 neural_network.py  file
 ```
 
-#### 3. For question 3 all the required optimizers has been implemented in 
+#### 3. For question 3 all the required optimizers has been created in 
+```
+neural_network.py  file
+```
+under the method `update_weights`
+
+#### 4. For question 4 all the required hyperparameter search has been executed from `train.py` file by the following command
+```
+python train.py --wandb_entity "ma23m011-iit-madras" --wandb_project "DA6401_Assignment1_ma23m011" --sweep
+```
+
+#### 5. For question 5
+After training the model, the best validation accuracy is 89.1.
+
+#### 6. For question 6 all the required optimizers has been created in 
 ```
 neural_network.py  file
 ```
 
-#### 3. For question 7 run the command 
+#### 7. For question 7 run the command 
 ```
 python Q7_ConfMatrix.py
 ```
 
-#### 4.For question 8 run the command 
+#### 8.For question 8 run the command 
 ```
 python Q8_CompareLosses.py
 ```
 
-#### 5.For question 10 run the command 
+#### 10.For question 10 run the command 
 ```
 python Q10_mnistEvaluation.py
 ```
