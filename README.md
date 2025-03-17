@@ -103,6 +103,10 @@ After finding the best hyperparameters, evaluate test accuracy and plot the conf
 ### Prediction:
 The model was evaluated on the Fashion-MNIST dataset using three different hyperparameter configurations. The test accuracy was measured for each configuration, and results were logged with Wandb.
 
+### Running the code:
+
+1.For question 1 run the python Q1_dataPlot.py file. 
+
 Wandb Project Report: [https://wandb.ai/ma23m011-iit-madras/DA6401_Assignment1_ma23m011/reportlist]
 
 
